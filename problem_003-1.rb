@@ -19,6 +19,17 @@
 # 2) Divide target number by increasing primes, determine if result is prime
 
 def prime?(n)
+  min = 2
+  return false if n < min
+  max = (Math.sqrt(n) + 1).floor
+  return false if max < min
+  return true if max == n
+
+  while min <= max
+    return false if n % min == 0
+    min += 1
+  end
+  true
 end
 
 ### Tests:
