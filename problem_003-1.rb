@@ -33,13 +33,27 @@ def prime?(n)
   true
 end
 
+$last_tested = 1
+$primes = []
+
+def primes_up_to(n)
+  return [] if n < 3
+  unless n <= $last_tested
+    while $last_tested < (n - 1)
+      $last_tested += 1
+      $primes << $last_tested if prime?($last_tested)
+    end
+  end
+  $primes.select { |prime| prime < n }
+end
+
 ### Tests:
 
 require 'rubygems'
 gem 'minitest'
 require 'minitest/autorun'
 
-describe 'prime?' do
+describe 'prime?(number)' do
   it 'returns false when passed numbers less than 2' do
     prime?(1).must_equal  false
     prime?(0).must_equal  false
@@ -53,5 +67,15 @@ describe 'prime?' do
     prime?(2).must_equal  true
     prime?(7).must_equal  true
     prime?(29).must_equal true
+  end
+end
+
+describe 'primes_up_to(number)' do
+  it 'returns an empty list when no primes are found' do
+    primes_up_to(1).must_equal []
+  end
+  it 'returns an ordered list of primes less than given maximum' do
+    primes_up_to(30).must_equal [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
+    primes_up_to(29).must_equal [2, 3, 5, 7, 11, 13, 17, 19, 23]
   end
 end
