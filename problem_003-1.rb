@@ -30,7 +30,7 @@ def prime?(n)
 
   max = (Math.sqrt(n) + 1).floor
   if max > $last_tested
-    primes_up_to(n)
+    primes_through(n)
   end
 
   current_index = 0
@@ -41,7 +41,7 @@ def prime?(n)
   true
 end
 
-def primes_up_to(n)
+def primes_through(n)
   return if n < 2
   primes_count = $primes.count
   while ($last_tested < n) || $primes.count == primes_count

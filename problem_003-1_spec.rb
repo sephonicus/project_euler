@@ -21,29 +21,29 @@ describe 'prime?(number)' do
   end
 end
 
-describe 'primes_up_through(number)' do
+describe 'primes_through(number)' do
   before do
     $last_tested = 1
     $primes = []
   end
   it 'leaves an empty list when no primes are found' do
-    primes_up_to(1)
+    primes_through(1)
     $primes.must_equal []
   end
   it 'generates an ordered list of primes up to the given maximum' do
-    primes_up_to(13)
+    primes_through(13)
     $primes.must_equal [2, 3, 5, 7, 11, 13]
   end
   it 'adds additional primes to the list if necessary' do
-    primes_up_to(11)
+    primes_through(11)
     $primes.must_equal [2, 3, 5, 7, 11]
-    primes_up_to(13)
+    primes_through(13)
     $primes.must_equal [2, 3, 5, 7, 11, 13]
   end
   it 'adds at least one additional prime to the list so that work is not repeated' do
-    primes_up_to(7)
+    primes_through(7)
     $primes.must_equal [2, 3, 5, 7]
-    primes_up_to(8)
+    primes_through(8)
     $primes.must_equal [2, 3, 5, 7, 11]
   end
 end
