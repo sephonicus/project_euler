@@ -15,8 +15,9 @@
 # point is at the square root. Therefore, if a number cannot be divided by the
 # primes from 2 to its square root, it is prime itself.
 
-# 1) Need a method for determining a prime
-# 2) Divide target number by increasing primes, determine if result is prime
+# 1) Write a method for determining if a number is prime or composite
+# 2) Calculate primes up to <number> / 2
+# 3) Walk down list of primes, determing if any are factors of <number>
 
 def prime?(n)
   min = 2
