@@ -19,22 +19,27 @@
 # 2) Calculate primes up to <number> / 2
 # 3) Walk down list of primes, determing if any are factors of <number>
 
-def prime?(n)
-  min = 2
-  return false if n < min
-  max = (Math.sqrt(n) + 1).floor
-  return false if max < min
-  return true if max == n
-
-  while min <= max
-    return false if n % min == 0
-    min += 1
-  end
-  true
-end
+MINIMUM_PRIME = 2
 
 $last_tested = 1
 $primes = []
+
+def prime?(n)
+  return false if n < MINIMUM_PRIME
+  return true if (2..3).include?(n)
+
+  max = (Math.sqrt(n) + 1).floor
+  if max > $last_tested
+    primes_up_to(n)
+  end
+
+  current_index = 0
+  while $primes[current_index] && $primes[current_index] <= max
+    return false if n % $primes[current_index] == 0
+    current_index += 1
+  end
+  true
+end
 
 def primes_up_to(n)
   return if n < 2
@@ -69,7 +74,7 @@ describe 'prime?(number)' do
 end
 
 describe 'primes_up_through(number)' do
-  after do
+  before do
     $last_tested = 1
     $primes = []
   end
