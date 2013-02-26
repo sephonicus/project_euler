@@ -18,5 +18,28 @@
 # 1) Need a method for determining a prime
 # 2) Divide target number by increasing primes, determine if result is prime
 
+def prime?(n)
+end
+
 ### Tests:
 
+require 'rubygems'
+gem 'minitest'
+require 'minitest/autorun'
+
+describe 'prime?' do
+  it 'returns false when passed numbers less than 2' do
+    prime?(1).must_equal  false
+    prime?(0).must_equal  false
+    prime?(-1).must_equal false
+    prime?(-2).must_equal false
+  end
+  it 'returns false when passed a composite numbers' do
+    prime?(4).must_equal false
+  end
+  it 'returns true when passed prime numbers' do
+    prime?(2).must_equal  true
+    prime?(7).must_equal  true
+    prime?(29).must_equal true
+  end
+end
