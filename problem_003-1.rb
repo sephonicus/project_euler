@@ -37,9 +37,9 @@ $last_tested = 1
 $primes = []
 
 def primes_up_to(n)
-  return if n < 3
+  return if n < 2
   primes_count = $primes.count
-  while ($last_tested < n - 1) || $primes.count == primes_count
+  while ($last_tested < n) || $primes.count == primes_count
     $last_tested += 1
     $primes << $last_tested if prime?($last_tested)
   end
@@ -68,7 +68,7 @@ describe 'prime?(number)' do
   end
 end
 
-describe 'primes_up_to(number)' do
+describe 'primes_up_through(number)' do
   after do
     $last_tested = 1
     $primes = []
@@ -77,20 +77,20 @@ describe 'primes_up_to(number)' do
     primes_up_to(1)
     $primes.must_equal []
   end
-  it 'generates an ordered list of primes less than given maximum' do
+  it 'generates an ordered list of primes up to the given maximum' do
     primes_up_to(13)
-    $primes.must_equal [2, 3, 5, 7, 11]
+    $primes.must_equal [2, 3, 5, 7, 11, 13]
   end
   it 'adds additional primes to the list if necessary' do
-    primes_up_to(13)
+    primes_up_to(11)
     $primes.must_equal [2, 3, 5, 7, 11]
-    primes_up_to(14)
+    primes_up_to(13)
     $primes.must_equal [2, 3, 5, 7, 11, 13]
   end
   it 'adds at least one additional prime to the list so that work is not repeated' do
-    primes_up_to(8)
+    primes_up_to(7)
     $primes.must_equal [2, 3, 5, 7]
-    primes_up_to(9)
+    primes_up_to(8)
     $primes.must_equal [2, 3, 5, 7, 11]
   end
 end
