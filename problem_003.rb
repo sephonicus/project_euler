@@ -2,12 +2,11 @@
 # What is the largest prime factor of the number 600_851_475_143 ?
 
 def has_divisors_in_range(n, min, max)
-  current = min
-  while current <= max
-    return true if n % current == 0
-    current += 1
+  while min <= max
+    return false if n % min == 0
+    min += 1
   end
-  false
+  true
 end
 
 def primes_up_to(n)
@@ -29,15 +28,8 @@ def primes_up_to(n)
   primes
 end
 
-def prime?(number)
-  if number > 3
-    current = number - 1
-    while current > 1
-      return false if number % current == 0
-      current -= 1
-    end
-  end
-  true
+def prime?(n)
+  has_divisors_in_range(n, 2, (Math.sqrt(n) + 1).floor)
 end
 
 def largest_prime_factor(n)
