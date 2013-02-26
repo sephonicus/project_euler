@@ -37,14 +37,12 @@ $last_tested = 1
 $primes = []
 
 def primes_up_to(n)
-  return [] if n < 3
-  unless n <= $last_tested
-    while $last_tested < (n - 1)
-      $last_tested += 1
-      $primes << $last_tested if prime?($last_tested)
-    end
+  return if n < 3
+  primes_count = $primes.count
+  while ($last_tested < n - 1) || $primes.count == primes_count
+    $last_tested += 1
+    $primes << $last_tested if prime?($last_tested)
   end
-  $primes.select { |prime| prime < n }
 end
 
 ### Tests:
@@ -71,11 +69,28 @@ describe 'prime?(number)' do
 end
 
 describe 'primes_up_to(number)' do
-  it 'returns an empty list when no primes are found' do
-    primes_up_to(1).must_equal []
+  after do
+    $last_tested = 1
+    $primes = []
   end
-  it 'returns an ordered list of primes less than given maximum' do
-    primes_up_to(30).must_equal [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
-    primes_up_to(29).must_equal [2, 3, 5, 7, 11, 13, 17, 19, 23]
+  it 'leaves an empty list when no primes are found' do
+    primes_up_to(1)
+    $primes.must_equal []
+  end
+  it 'generates an ordered list of primes less than given maximum' do
+    primes_up_to(13)
+    $primes.must_equal [2, 3, 5, 7, 11]
+  end
+  it 'adds additional primes to the list if necessary' do
+    primes_up_to(13)
+    $primes.must_equal [2, 3, 5, 7, 11]
+    primes_up_to(14)
+    $primes.must_equal [2, 3, 5, 7, 11, 13]
+  end
+  it 'adds at least one additional prime to the list so that work is not repeated' do
+    primes_up_to(8)
+    $primes.must_equal [2, 3, 5, 7]
+    primes_up_to(9)
+    $primes.must_equal [2, 3, 5, 7, 11]
   end
 end
