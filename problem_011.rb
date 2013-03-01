@@ -67,7 +67,7 @@ def greatest_product(matrix)
   matrix.each do |row|
     current_start = 0
     while stop_index(current_start) < row.size
-      product = row[current_start..stop_index(current_start)].inject(&:*)
+      product = row[current_start..stop_index(current_start)].map(&:to_i).inject(&:*)
       greatest_product = [greatest_product.to_i, product].max
       current_start += 1
     end
@@ -75,4 +75,13 @@ def greatest_product(matrix)
   greatest_product
 end
 
-puts [greatest_product(MATRIX), greatest_product(MATRIX.transpose)].max
+def skew_right(matrix)
+  size = matrix.size
+  output = Array.new(size) { Array.new(size + (size - 1), nil) }
+  matrix.each_with_index do |row, i|
+    output[i][i, size] = row[0, size - 1]
+  end
+  output.transpose
+end
+
+puts [greatest_product(MATRIX), greatest_product(MATRIX.transpose), greatest_product(skew_right(MATRIX))].max
