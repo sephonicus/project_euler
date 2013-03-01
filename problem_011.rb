@@ -58,19 +58,21 @@ MATRIX = [
 ].freeze
 ADJACENT = 4
 
-greatest_product = nil
-
 def stop_index(start_index)
   start_index + (ADJACENT - 1)
 end
 
-MATRIX.each do |row|
-  current_start = 0
-  while stop_index(current_start) < row.size
-    product = row[current_start..stop_index(current_start)].inject(&:*)
-    greatest_product = [greatest_product.to_i, product].max
-    current_start += 1
+def greatest_product(matrix)
+  greatest_product = nil
+  matrix.each do |row|
+    current_start = 0
+    while stop_index(current_start) < row.size
+      product = row[current_start..stop_index(current_start)].inject(&:*)
+      greatest_product = [greatest_product.to_i, product].max
+      current_start += 1
+    end
   end
+  greatest_product
 end
 
-puts greatest_product
+puts [greatest_product(MATRIX), greatest_product(MATRIX.transpose)].max
