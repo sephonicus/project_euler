@@ -75,13 +75,21 @@ def greatest_product(matrix)
   greatest_product
 end
 
-def skew_right(matrix)
+def skew(matrix)
   size = matrix.size
   output = Array.new(size) { Array.new(size + (size - 1), nil) }
   matrix.each_with_index do |row, i|
-    output[i][i, size] = row[0, size - 1]
+    output[yield(i)][i, size] = row[0, size - 1]
   end
   output.transpose
 end
 
-puts [greatest_product(MATRIX), greatest_product(MATRIX.transpose), greatest_product(skew_right(MATRIX))].max
+def skew_right(matrix)
+  skew(matrix) { |i| i }
+end
+
+def skew_left(matrix)
+  skew(matrix) { |i| matrix.size - 1 - i }
+end
+
+puts [MATRIX, MATRIX.transpose, skew_right(MATRIX), skew_left(MATRIX)].map { |a| greatest_product(a) }.max
