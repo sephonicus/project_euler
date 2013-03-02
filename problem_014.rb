@@ -47,4 +47,5 @@ max_number = nil
   end
 end
 
+puts max_length
 puts max_number
