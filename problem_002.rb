@@ -13,7 +13,7 @@
 # Because the first 2 numbers in the sequence are odd, and each subsequent
 # number is the sum of the previous two, the sequence will follow the pattern:
 #   odd odd even odd odd even...
-# Therefore, we only have to count the each third element in the sequence.
+# Therefore, we only have to count each third element in the sequence.
 
 UPPER_BOUND = 4_000_000
 
