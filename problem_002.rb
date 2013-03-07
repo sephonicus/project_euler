@@ -15,17 +15,17 @@
 #   odd odd even odd odd even...
 # Therefore, we only have to count each third element in the sequence.
 
+require './fibonacci'
+
 UPPER_BOUND = 4_000_000
+STEP = 3
 
 sum = 0
-first = second = 1
-third = first + second
+element = STEP
 
-while third < UPPER_BOUND
-  sum += third
-  first  = second + third
-  second = first  + third
-  third  = first  + second
+while Fibonacci[element] < UPPER_BOUND
+  sum += Fibonacci[element]
+  element += STEP
 end
 
 puts sum
