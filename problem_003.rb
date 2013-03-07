@@ -2,7 +2,15 @@
 
 # The prime factors of 13195 are 5, 7, 13 and 29.
 
-# What is the largest prime factor of the number 600_851_475_143 ?
+# What is the largest prime factor of the number 600_851_475_143?
+
+### Notes:
+
+# A number divided by a small factor yields a large factor, and vice versa. As
+# the small factor is incremented, the large decreases. The crossover point is
+# the square root.
+
+### Solution:
 
 require 'prime'
 
