@@ -14,30 +14,30 @@
 
 require 'prime'
 
+class Integer
+  def truncatable?
+    self.prime? && (self.to_s.size == 1 || yield(self))
+  end
+
+  def ltr_truncatable?
+    self.truncatable? { |n| (n % (10 ** (n.to_s.size - 1))).ltr_truncatable? }
+  end
+
+  def rtl_truncatable?
+    self.truncatable? { |n| (n / 10).rtl_truncatable? }
+  end
+end
+
 TARGET_COUNT = 11
 FIRST_POSSIBLE = 11
 BLOCK_SIZE = 1000
-
-def truncatable?(n)
-  n.prime? && (n.to_s.size == 1 || yield(n))
-end
-
-def ltr_truncatable?(prime)
-  truncatable?(prime) { |n| ltr_truncatable?(n % (10 ** (n.to_s.size - 1))) }
-end
-
-def rtl_truncatable?(prime)
-  truncatable?(prime) { |n| rtl_truncatable?(n / 10) }
-end
 
 truncatable = []
 current = FIRST_POSSIBLE
 
 while truncatable.size < TARGET_COUNT
   BLOCK_SIZE.times do
-    if ltr_truncatable?(current) && rtl_truncatable?(current)
-      truncatable << current
-    end
+    truncatable << current if current.ltr_truncatable? && current.rtl_truncatable?
     current += 1
   end
 end
