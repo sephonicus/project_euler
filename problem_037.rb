@@ -17,43 +17,17 @@ require 'prime'
 TARGET_COUNT = 11
 FIRST_POSSIBLE = 11
 BLOCK_SIZE = 1000
-DIVISORS = Hash.new { |h, k| h[k] = 10 ** (k - 1) }
 
-def ltr_truncatable?(n)
-  size = n.to_s.size
-  if size > 1
-    n.prime? && ltr_truncatable?(n % DIVISORS[size])
-  else
-    n.prime?
-  end
+def truncatable?(n)
+  n.prime? && (n.to_s.size == 1 || yield(n))
 end
 
-def rtl_truncatable?(n)
-  size = n.to_s.size
-  if size > 1
-    n.prime? && rtl_truncatable?(n / 10)
-  else
-    n.prime?
-  end
+def ltr_truncatable?(prime)
+  truncatable?(prime) { |n| ltr_truncatable?(n % (10 ** (n.to_s.size - 1))) }
 end
 
-def left_to_right?(n)
-  size = n.to_s.size
-  (size - 1).times do
-    n = n % DIVISORS[size]
-    return false unless n.prime?
-    size -= 1
-  end
-  true
-end
-
-def right_to_left?(n)
-  size = n.to_s.size
-  (size - 1).times do
-    n = n / 10
-    return false unless n.prime?
-  end
-  true
+def rtl_truncatable?(prime)
+  truncatable?(prime) { |n| rtl_truncatable?(n / 10) }
 end
 
 truncatable = []
@@ -61,10 +35,8 @@ current = FIRST_POSSIBLE
 
 while truncatable.size < TARGET_COUNT
   BLOCK_SIZE.times do
-    if current.prime?
-      if ltr_truncatable?(current) && rtl_truncatable?(current)
-        truncatable << current
-      end
+    if ltr_truncatable?(current) && rtl_truncatable?(current)
+      truncatable << current
     end
     current += 1
   end
