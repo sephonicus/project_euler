@@ -19,6 +19,24 @@ FIRST_POSSIBLE = 11
 BLOCK_SIZE = 1000
 DIVISORS = Hash.new { |h, k| h[k] = 10 ** (k - 1) }
 
+def ltr_truncatable?(n)
+  size = n.to_s.size
+  if size > 1
+    n.prime? && ltr_truncatable?(n % DIVISORS[size])
+  else
+    n.prime?
+  end
+end
+
+def rtl_truncatable?(n)
+  size = n.to_s.size
+  if size > 1
+    n.prime? && rtl_truncatable?(n / 10)
+  else
+    n.prime?
+  end
+end
+
 def left_to_right?(n)
   size = n.to_s.size
   (size - 1).times do
@@ -44,7 +62,7 @@ current = FIRST_POSSIBLE
 while truncatable.size < TARGET_COUNT
   BLOCK_SIZE.times do
     if current.prime?
-      if left_to_right?(current) && right_to_left?(current)
+      if ltr_truncatable?(current) && rtl_truncatable?(current)
         truncatable << current
       end
     end
