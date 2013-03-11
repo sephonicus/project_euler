@@ -48,4 +48,4 @@ end
 
 numerator   = possibilities.map { |p| p[0] }.inject(&:*)
 denominator = possibilities.map { |p| p[1] }.inject(&:*)
-puts (numerator.to_f / denominator) # => 0.01 == 1/100
+puts (numerator.to_f / denominator).rationalize.denominator
