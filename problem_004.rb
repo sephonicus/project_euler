@@ -13,23 +13,15 @@
 
 ### Solution:
 
-NUMBERS = (100..999).to_a.freeze
+require './lib/palindrome'
 
-def palindrome?(n)
-  digits = n.to_s.split('')
-  while digits.size > 1
-    first = digits.shift
-    last = digits.pop
-    return false unless first == last
-  end
-  true
-end
+NUMBERS = (100..999).to_a.freeze
 
 max = 0
 NUMBERS.each do |n|
   NUMBERS.each do |m|
     product = n * m
-    if product > max && palindrome?(product)
+    if product > max && Palindrome.palindrome?(product)
       max = product
     end
   end
