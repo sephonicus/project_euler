@@ -17,7 +17,7 @@ require 'prime'
 TARGET_COUNT = 11
 FIRST_POSSIBLE = 11
 BLOCK_SIZE = 1000
-DIVISORS = Hash.new { |h, k| h[k] = ('9' * (k - 1)).to_i + 1 }
+DIVISORS = Hash.new { |h, k| h[k] = 10 ** (k - 1) }
 
 def left_to_right?(n)
   size = n.to_s.size
