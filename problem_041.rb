@@ -17,21 +17,40 @@
 # At current rate of processing, this will take > 1 hour. Might be better to
 # count down in pandigitals and find the first that is prime.
 
+# All 9-digit pandigitals can be found by taking the permutations of 1-9.
+# All 8-digit pandigitals can be found by taking the permutations of 1-8.
+# ...
+# Yields 9! + 8! + ... 1! = 409113 possibilities
+
 ### Solution:
 
 require 'prime'
 
-MAX = 987_654_321
-COMPOSITIONS = Hash[(1..9).map { |i| [i, (1..i).to_a.join] }]
-
-max_candidate = 0
-
-Prime.each do |prime|
-  break if prime > MAX
-  digits = prime.to_s
-  if digits.split(//).sort.join == COMPOSITIONS[digits.size]
-    max_candidate = prime
+def largest_pandigital_prime(to_choose, chosen = [])
+  to_choose.each do |digit|
+    remaining = to_choose.dup
+    remaining.delete(digit)
+    selected  = chosen.dup
+    selected.push(digit)
+    if remaining.size > 0
+      sub = largest_pandigital_prime(remaining.dup, selected.dup)
+      return sub if sub
+    else
+      candidate = selected.join.to_i
+      if Prime.prime?(candidate)
+        return candidate
+      end
+    end
   end
+  return nil
 end
 
-puts max_candidate
+top = 9
+answer = nil
+while top > 0 && !answer
+  output = largest_pandigital_prime((1..top).to_a.reverse)
+  answer = output if output
+  top -= 1
+end
+
+p answer
