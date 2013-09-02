@@ -18,76 +18,158 @@
 
 # None found <= 2000, need to be able to resume from previous attempts.
 
+# Solved
+
 ### Solution:
 
-module Pentagonal
-  class CandidateFinder
-    STARTING_INDEX = 1
-    MAX_INDEX = 2000
+# module Pentagonal
+#   class CandidateFinder
+#     STARTING_INDEX = 1
+#     MAX_INDEX = 2000
 
-    def self.run
-      p 'Searching'
+#     def self.run
+#       p 'Searching'
 
-      pentagonals = {}
-      largest_value = 0
-      smallest_difference = nil
-      index = STARTING_INDEX
+#       pentagonals = {}
+#       largest_value = 0
+#       smallest_difference = nil
+#       index = STARTING_INDEX
 
-      while index <= MAX_INDEX do
-        print '.'
-        pentagonal = pentagonals[index] || Pentagonal::Number.new(index)
-        pentagonals[index] ||= pentagonal
+#       while index <= MAX_INDEX do
+#         print '.'
+#         pentagonal = pentagonals[index] || Pentagonal::Number.new(index)
+#         pentagonals[index] ||= pentagonal
 
-        previous = pentagonals.select { |k, v| k < index }
-        pairs = previous.map { |k, v| [v, pentagonal] }
-        pairs.select do |pair|
-          sum = pair.map(&:value).inject(&:+)
-          if sum > largest_value
-            secondary_index = index + 1
-            until largest_value > sum
-              lookahead = Pentagonal::Number.new(secondary_index)
-              pentagonals[secondary_index] = lookahead
-              largest_value = [lookahead.value, largest_value].max
-              secondary_index += 1
-            end
-          end
-          difference = pair.map(&:value).inject(&:-).abs
-          values = pentagonals.values.map(&:value)
-          if values.include?(sum) && values.include?(difference)
-            # check to see if difference is smallest
-            if smallest_difference.nil? || difference < smallest_difference
-              p
-              p "Found candidate pair with difference #{difference}, indices #{pair.map(&:index)}"
-              p 'Continue? (y/N)'
-              return unless gets.match(/y/i)
-              p 'Continuing search'
-            end
-          end
+#         previous = pentagonals.select { |k, v| k < index }
+#         pairs = previous.map { |k, v| [v, pentagonal] }
+#         pairs.select do |pair|
+#           sum = pair.map(&:value).inject(&:+)
+#           if sum > largest_value
+#             secondary_index = index + 1
+#             until largest_value > sum
+#               lookahead = Pentagonal::Number.new(secondary_index)
+#               pentagonals[secondary_index] = lookahead
+#               largest_value = [lookahead.value, largest_value].max
+#               secondary_index += 1
+#             end
+#           end
+#           difference = pair.map(&:value).inject(&:-).abs
+#           values = pentagonals.values.map(&:value)
+#           if values.include?(sum) && values.include?(difference)
+#             # check to see if difference is smallest
+#             if smallest_difference.nil? || difference < smallest_difference
+#               p
+#               p "Found candidate pair with difference #{difference}, indices #{pair.map(&:index)}"
+#               p 'Continue? (y/N)'
+#               return unless gets.match(/y/i)
+#               p 'Continuing search'
+#             end
+#           end
+#         end
+
+#         index += 1
+#       end
+#     end
+#   end
+
+#   class Number
+#     include Comparable
+
+#     attr_accessor :index, :value
+
+#     def initialize(index)
+#       @index = index
+#       @value = index * (3 * index - 1) / 2
+#     end
+
+#     def <=>(other)
+#       index <=> other.index
+#     end
+
+#     def to_s
+#       "Pentagonal::Number, Index: #{index}, Value: #{value}"
+#     end
+#   end
+# end
+
+# Pentagonal::CandidateFinder.run
+
+
+# require 'benchmark'
+# require 'set'
+
+# array_list = (1..10_000).to_a
+# set_list = (1..10_000).to_a.to_set
+
+# Benchmark.bm(10) do |x|
+#   x.report('array') { array_list.each { |el| array_list.include? el  } }
+#   x.report('set') { set_list.each { |el| set_list.include? el } }
+# end
+
+
+require 'set'
+
+class Solver
+  BATCH_SIZE = 1000
+
+  attr_accessor :pentagonals, :candidates, :values, :index, :smallest_difference
+
+  def initialize
+    @pentagonals = {}
+    @candidates = []
+    @values = Set.new
+    @smallest_difference = nil
+    @index = 1
+  end
+
+  def self.search
+    p 'Searching'
+
+    solver = new
+    loop do
+      solver.generate_another(1000)
+      loop do
+        pair = solver.candidates.shift
+        break if pair.nil?
+        sum = pair.inject(&:+)
+        if solver.highest_value && sum > solver.highest_value
+          solver.candidates.unshift(pair)
+          break
         end
-
-        index += 1
+        if solver.values.include?(sum)
+          solver.smallest_difference = [solver.smallest_difference, pair.inject(&:-).abs].compact.min
+          p solver.smallest_difference
+        end
       end
     end
   end
 
-  class Number
-    include Comparable
+  def highest_value
+    pentagonals[index]
+  end
 
-    attr_accessor :index, :value
+  def generate_another(batch_size)
+    target_index = index + batch_size
 
-    def initialize(index)
-      @index = index
-      @value = index * (3 * index - 1) / 2
-    end
+    while index <= target_index
+      print '.' if index % BATCH_SIZE == 0
 
-    def <=>(other)
-      index <=> other.index
-    end
+      value = index * (3 * index - 1) / 2
 
-    def to_s
-      "Pentagonal::Number, Index: #{index}, Value: #{value}"
+      pentagonals[index] = value
+      values << value
+
+      if index > 1
+        1.upto(index - 1) do |i|
+          if values.include?(value - pentagonals[i])
+            candidates << [value, pentagonals[i]].sort
+          end
+        end
+      end
+
+      self.index += 1
     end
   end
 end
 
-Pentagonal::CandidateFinder.run
+Solver.search
